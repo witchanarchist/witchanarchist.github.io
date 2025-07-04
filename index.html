@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Snapshots of Thought</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+Great+Primer+SC&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+	body { background-repeat: repeat; margin: 0; padding: 20px; gap: 20px; }
+	#mainwrapper { background: white; width: 46%; height: 50%; display: flex; flex-direction: column; align-items: center; margin-left: 25%; padding: 40px }
+    #mainImage { max-width: 100%; height: auto;  margin-left: auto; margin-right: auto; }
+	#imageCounter { pointer-events: none; background-color: transparent; border: none; font-size: 1em; color: inherit; }
+	#postCounter { pointer-events: none; background-color: transparent; border: none; font-size: 1em; color: inherit; }
+    #postContent { margin-top: 1em; white-space: pre-wrap; max-width: 80ch; text-align: center; padding: 0 1em;}
+	#sidepanel { background-color: #ffffff; border: 2px solid; border-color: #ffffff; display: flex; flex-direction: column; height: auto; align-self: flex-start; bottom-margin: 50px; padding: 10px; gap: 10px; max-width: 224px; min-height: 400% }
+    button { background: transparent; margin: 0.25em; border: none; opacity: 1.0}
+	button:hover { opacity: 0.5 }
+	.PrimerSC {
+		font-family: "IM Fell Great Primer SC", serif;
+		font-weight: 500;
+		font-style: normal;
+		font-size: 120%;
+		}
+	.Primer {
+  		font-family: "IM Fell English", serif;
+  		font-weight: 400;
+  		font-style: normal;
+		}
+	  
+</style>
+</head>
+<body style= "display: flex;">
+	<div id=mainwrapper>
+		<div class="Primer">  <h1> Hi! I'm Trans Witch Anarchist!</h1>
+		</div>
+		<div>
+			<button onclick="prevImage()">Previous image</button>
+			<button onclick="nextImage()">Next image</button>
+		</div>
+		<img id=mainImage src="" alt="Obrazek" />
+		<button id="imageCounter">0 / 0</button>
+
+
+		<div id="postContent" class="PrimerSC"></div>
+		<button id="postCounter">0 / 0</button>
+		<div>
+			<button onclick="prevPost()">Previous post</button>
+			<button onclick="nextPost()">Next post</button>
+		</div>
+	</div>
+	<div id="sidepanel">
+	<button style="height: 20px; background: none; border: none; "></button>
+      <button onclick="window.location.href='web.html'"> ✹My Web Manifesto✹ </button>
+      <button style="height: 30px; background: none; border: none; "></button>
+    </div>
+	
+  <script src="gallery.js" ></script>
+</body>
+</html>
