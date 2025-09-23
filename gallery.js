@@ -10,7 +10,7 @@ let maxPost = 1;
 // Zlicz obrazki
 async function findMaxImageNumber() {
   let n = 1;
-  while (await imageExists(`img${n}.png?v=${Date.now()}`)) {
+  while (await imageExists(`img${n}.png?v=${getCacheBuster()}`)) {
     n++;
   }
   return n - 1;
@@ -19,7 +19,7 @@ async function findMaxImageNumber() {
 // Zlicz posty
 async function findMaxPostNumber() {
   let n = 1;
-  while (await fileExists(`post${n}.txt?v=${Date.now()}`)) {
+  while (await fileExists(`post${n}.txt?v=${getCacheBuster()}`)) {
     n++;
   }
   return n - 1;
@@ -52,14 +52,14 @@ async function fileExists(url) {
 // Ładuje obrazek
 function loadImage(n) {
   const imgElement = document.getElementById("mainImage");
-  imgElement.src = `img${n}.png?v=${Date.now()}`;
+  imgElement.src = `img${n}.png?v=${getCacheBuster()}`;
   const counter = document.getElementById("imageCounter");
   counter.textContent = `${currentImage} / ${maxImage}`;
 }
 
 // Ładuje post
 async function loadPost(n) {
-  const res = await fetch(`post${n}.txt?v=${Date.now()}`);
+  const res = await fetch(`post${n}.txt?v=${getCacheBuster()}`);
   let text = await res.text();
 
   // Insert raw text first
@@ -108,15 +108,17 @@ function decodeBase64Elements() {
   const el = document.getElementById("64");
   if (el) {
     try {
-      // atob decodes Base64 to text
       el.innerHTML = atob(el.textContent.trim());
     } catch {
       console.warn("Invalid Base64 in #64 element");
     }
   }
 }
-
-// Inicjalizacja
+function getCacheBuster() {
+  const now = Date.now();
+  const hour = 1000 * 60 * 60; // ms in one hour
+  return Math.floor(now / hour); // same number within the hour
+}
 
 window.addEventListener("DOMContentLoaded", async () => {
   
@@ -136,3 +138,4 @@ console.log("window.prevPost = prevPost;")
 window.nextPost = nextPost;
 console.log("window.nextPost = nextPost;")
 console.log("gallery.js end");
+
