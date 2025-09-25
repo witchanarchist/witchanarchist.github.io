@@ -85,10 +85,8 @@ function prevImage() {
   if (currentImage > 1) {
     currentImage--;
     loadImage(currentImage);
-
-    const url = `img${currentImage - 1}.png?v=${getCacheBuster()}`;
-    fetch(url, { method: 'GET', cache: 'force-cache' })
-    
+	const previmgurl = `img${currentImage - 1}.png?v=${getCacheBuster()}`;
+    fetch(previmgurl, { method: 'GET', cache: 'force-cache' })
   }
 }
 
@@ -105,6 +103,8 @@ function prevPost() {
   if (currentPost > 1) {
     currentPost--;
     loadPost(currentPost);
+	const prevposturl = `post${currentPost - 1}.txt?v=${getCacheBuster()}`;
+    fetch(prevposturl, { method: 'GET', cache: 'force-cache' })
   }
 }
 
@@ -123,19 +123,44 @@ function getCacheBuster() {
   const hour = 1000 * 60 * 60; // ms in one hour
   return Math.floor(now / hour); // same number within the hour
 }
-
+function setBackgroundImage(url) {
+  const img = new Image();
+  img.src = url
+  document.body.style.backgroundImage = `url('${img.src}')`;
+} 
 window.addEventListener("DOMContentLoaded", async () => {
+  // Find max image and post numbers in parallel
+  const [imageCount, postCount] = await Promise.all([
+    findMaxImageNumber(),
+    findMaxPostNumber()
+  ]);
   
-  maxImage = await findMaxImageNumber();
-  maxPost = await findMaxPostNumber();
+  maxImage = imageCount;
+  maxPost = postCount;
   currentImage = maxImage;
   currentPost = maxPost;
-  loadImage(currentImage);
-  loadPost(currentPost);
 
-  const url = `img${currentImage - 1}.png?v=${getCacheBuster()}`;
-  fetch(url, { method: 'GET', cache: 'force-cache' })
-  
+  // Load image and post in parallel
+  const loadPromises = [
+    loadImage(currentImage), // synchronous but kept for symmetry
+    loadPost(currentPost)    // returns a Promise
+  ];
+
+  // Preload previous image and post
+  if (currentImage > 1) {
+    const prevImgUrl = `img${currentImage - 1}.png?v=${getCacheBuster()}`;
+    loadPromises.push(fetch(prevImgUrl, { method: 'GET', cache: 'force-cache' }));
+  }
+  if (currentPost > 1) {
+    const prevPostUrl = `post${currentPost - 1}.txt?v=${getCacheBuster()}`;
+    loadPromises.push(fetch(prevPostUrl, { method: 'GET', cache: 'force-cache' }));
+  }
+
+  // Start background image loading (doesn’t need to be awaited)
+  setBackgroundImage("bcg.png");
+
+  // Wait for all parallel tasks to complete
+  await Promise.all(loadPromises);
 });
 window.prevImage = prevImage;
 console.log("window.prevImage = prevImage;")
@@ -146,5 +171,4 @@ console.log("window.prevPost = prevPost;")
 window.nextPost = nextPost;
 console.log("window.nextPost = nextPost;")
 console.log("gallery.js end");
-
 
