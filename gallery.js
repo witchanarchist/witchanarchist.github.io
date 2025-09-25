@@ -85,6 +85,10 @@ function prevImage() {
   if (currentImage > 1) {
     currentImage--;
     loadImage(currentImage);
+
+    const url = `img${currentImage - 1}.png?v=${getCacheBuster()}`;
+    fetch(url, { method: 'GET', cache: 'force-cache' })
+    
   }
 }
 
@@ -128,6 +132,10 @@ window.addEventListener("DOMContentLoaded", async () => {
   currentPost = maxPost;
   loadImage(currentImage);
   loadPost(currentPost);
+
+  const url = `img${currentImage - 1}.png?v=${getCacheBuster()}`;
+  fetch(url, { method: 'GET', cache: 'force-cache' })
+  
 });
 window.prevImage = prevImage;
 console.log("window.prevImage = prevImage;")
@@ -138,4 +146,5 @@ console.log("window.prevPost = prevPost;")
 window.nextPost = nextPost;
 console.log("window.nextPost = nextPost;")
 console.log("gallery.js end");
+
 
