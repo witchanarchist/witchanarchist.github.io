@@ -62,17 +62,15 @@ async function loadPost(n) {
   const res = await fetch(`post${n}.txt?v=${getCacheBuster()}`);
   let text = await res.text();
 
-  // Insert raw text first
   document.getElementById("postContent").innerHTML = `<p>${text}</p>`;
 
-  // Then decode any Base64 elements inside
+  
   decodeBase64Elements();
 
   const counter = document.getElementById("postCounter");
   counter.textContent = `${currentPost} / ${maxPost}`;
 }
 
-// Funkcje do zmieniania obrazków
 function nextImage() {
   if (currentImage < maxImage) {
     currentImage++;
@@ -90,7 +88,6 @@ function prevImage() {
   }
 }
 
-// Funkcje do zmieniania postów
 function nextPost() {
   if (currentPost < maxPost) {
     currentPost++;
@@ -120,16 +117,10 @@ function decodeBase64Elements() {
 }
 function getCacheBuster() {
   const now = Date.now();
-  const hour = 1000 * 60 * 60; // ms in one hour
-  return Math.floor(now / hour); // same number within the hour
-}
-function setBackgroundImage(url) {
-  const img = new Image();
-  img.src = url
-  document.body.style.backgroundImage = `url('${img.src}')`;
+  const hour = 1000 * 60 * 60; 
+  return Math.floor(now / hour); r
 } 
 window.addEventListener("DOMContentLoaded", async () => {
-  // Find max image and post numbers in parallel
   const [imageCount, postCount] = await Promise.all([
     findMaxImageNumber(),
     findMaxPostNumber()
@@ -140,13 +131,11 @@ window.addEventListener("DOMContentLoaded", async () => {
   currentImage = maxImage;
   currentPost = maxPost;
 
-  // Load image and post in parallel
   const loadPromises = [
-    loadImage(currentImage), // synchronous but kept for symmetry
-    loadPost(currentPost)    // returns a Promise
+    loadImage(currentImage), 
+    loadPost(currentPost)    
   ];
 
-  // Preload previous image and post
   if (currentImage > 1) {
     const prevImgUrl = `img${currentImage - 1}.png?v=${getCacheBuster()}`;
     loadPromises.push(fetch(prevImgUrl, { method: 'GET', cache: 'force-cache' }));
@@ -156,10 +145,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     loadPromises.push(fetch(prevPostUrl, { method: 'GET', cache: 'force-cache' }));
   }
 
-  // Start background image loading (doesn’t need to be awaited)
-  setBackgroundImage("bcg.png");
-
-  // Wait for all parallel tasks to complete
   await Promise.all(loadPromises);
 });
 window.prevImage = prevImage;
@@ -171,4 +156,5 @@ console.log("window.prevPost = prevPost;")
 window.nextPost = nextPost;
 console.log("window.nextPost = nextPost;")
 console.log("gallery.js end");
+
 
