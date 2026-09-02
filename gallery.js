@@ -1,5 +1,10 @@
 console.log("gallery.js start");
 
+const galleryMode = window.location.pathname.includes("dark")
+  ? "dark"
+  : "light";
+
+const fP = galleryMode === "dark" ? "d" : "l";
 
 let currentImage = 1;
 let maxImage = 1;
@@ -10,7 +15,7 @@ let maxPost = 1;
 // Zlicz obrazki
 async function findMaxImageNumber() {
   let n = 1;
-  while (await imageExists(`img${n}.png?v=${getCacheBuster()}`)) {
+  while (await imageExists(`${fP}img${n}.png?v=${getCacheBuster()}`)) {
     n++;
   }
   return n - 1;
@@ -19,7 +24,7 @@ async function findMaxImageNumber() {
 // Zlicz posty
 async function findMaxPostNumber() {
   let n = 1;
-  while (await fileExists(`post${n}.txt?v=${getCacheBuster()}`)) {
+  while (await fileExists(`${fP}post${n}.txt?v=${getCacheBuster()}`)) {
     n++;
   }
   return n - 1;
@@ -52,14 +57,15 @@ async function fileExists(url) {
 // Ładuje obrazek
 function loadImage(n) {
   const imgElement = document.getElementById("mainImage");
-  imgElement.src = `img${n}.png?v=${getCacheBuster()}`;
+  imgElement.src = `${fP}img${n}.png?v=${getCacheBuster()}`;
   const counter = document.getElementById("imageCounter");
   counter.textContent = `${currentImage} / ${maxImage}`;
 }
 
 // Ładuje post
 async function loadPost(n) {
-  const res = await fetch(`post${n}.txt?v=${getCacheBuster()}`);
+  console.log("Laduje: ", `${fP}post${n}.txt?v=${getCacheBuster()}`)
+  const res = await fetch(`${fP}post${n}.txt?v=${getCacheBuster()}`);
   let text = await res.text();
 
   document.getElementById("postContent").innerHTML = `<p>${text}</p>`;
@@ -83,7 +89,7 @@ function prevImage() {
   if (currentImage > 1) {
     currentImage--;
     loadImage(currentImage);
-	const previmgurl = `img${currentImage - 1}.png?v=${getCacheBuster()}`;
+	const previmgurl = `${fP}img${currentImage - 1}.png?v=${getCacheBuster()}`;
     fetch(previmgurl, { method: 'GET', cache: 'force-cache' })
   }
 }
@@ -100,7 +106,7 @@ function prevPost() {
   if (currentPost > 1) {
     currentPost--;
     loadPost(currentPost);
-	const prevposturl = `post${currentPost - 1}.txt?v=${getCacheBuster()}`;
+	const prevposturl = `${fP}post${currentPost - 1}.txt?v=${getCacheBuster()}`;
     fetch(prevposturl, { method: 'GET', cache: 'force-cache' })
   }
 }
@@ -118,7 +124,7 @@ function decodeBase64Elements() {
 function getCacheBuster() {
   const now = Date.now();
   const hour = 1000 * 60 * 60; 
-  return Math.floor(now / hour); r
+  return Date.now()
 } 
 window.addEventListener("DOMContentLoaded", async () => {
   const [imageCount, postCount] = await Promise.all([
@@ -137,11 +143,11 @@ window.addEventListener("DOMContentLoaded", async () => {
   ];
 
   if (currentImage > 1) {
-    const prevImgUrl = `img${currentImage - 1}.png?v=${getCacheBuster()}`;
+    const prevImgUrl = `${fP}img${currentImage - 1}.png?v=${getCacheBuster()}`;
     loadPromises.push(fetch(prevImgUrl, { method: 'GET', cache: 'force-cache' }));
   }
   if (currentPost > 1) {
-    const prevPostUrl = `post${currentPost - 1}.txt?v=${getCacheBuster()}`;
+    const prevPostUrl = `${fP}post${currentPost - 1}.txt?v=${getCacheBuster()}`;
     loadPromises.push(fetch(prevPostUrl, { method: 'GET', cache: 'force-cache' }));
   }
 
